@@ -80,9 +80,7 @@ class Request {
 	@SerializedName("UserName")
 	private String userName;
 
-	public String getUserName() {
-		return userName;
-	}
+	public String getUserName() { return userName; }
 
 	public void setUserName(String userName) { this.userName = userName; }
 
@@ -100,15 +98,19 @@ class CheckpointRequest extends Request {
 	@SerializedName("CheckpointId")
 	private String checkpointId;
 
-	public String getCheckpointId() {
-		return checkpointId;
+	public String getCheckpointId() { return checkpointId;	}
+
+	public void setCheckpointId(String id) {
+		checkpointId = id;
 	}
 
 	@SerializedName("Secret")
 	private String secret;
 
-	public String getSecret() {
-		return secret;
+	public String getSecret() { return secret; }
+
+	public void setSecret(String s) {
+		secret = s;
 	}
 }
 
@@ -116,7 +118,7 @@ class RouteRequest extends Request {
 	@SerializedName("RouteId")
 	private String routeId;
 
-	public String getRouteId() {
-		return routeId;
-	}
+	public String getRouteId() { return routeId; }
+
+	public void setRouteId(String id) { routeId = id;	}
 }

@@ -2,8 +2,8 @@ package moc5.amazingrace;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import java.util.Objects;
 
-public class RouteListActivity extends AppCompatActivity {
+public class AmazingRaceMainActivity extends AppCompatActivity {
     RouteListAdapter adapter;
 
     @Override
@@ -23,7 +23,7 @@ public class RouteListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ((AmazingRaceApp)getApplication()).setSelectedRoute(null);
+        ((AmazingRace)getApplication()).setSelectedRoute(null);
 
         ListView lsvRoutes = (ListView)findViewById(R.id.lstRoutes);
         adapter = new RouteListAdapter();
@@ -32,9 +32,9 @@ public class RouteListActivity extends AppCompatActivity {
         lsvRoutes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
-                Intent intent = new Intent(RouteListActivity.this, RouteDetailsActivity.class);
+                Intent intent = new Intent(AmazingRaceMainActivity.this, RouteDetailsActivity.class);
                 Route selectedRoute = adapter.getItem(position);
-                ((AmazingRaceApp)getApplication()).setSelectedRoute(selectedRoute);
+                ((AmazingRace)getApplication()).setSelectedRoute(selectedRoute);
                 startActivity(intent);
             }
         });
@@ -58,7 +58,7 @@ public class RouteListActivity extends AppCompatActivity {
                 try {
                     return new ServiceProxy().getRoutes(strings[0], strings[1]);
                 } catch(ServiceCallException e) {
-                    Log.e(RouteListActivity.this.toString(), "Failed to load route list");
+                    Log.e(AmazingRaceMainActivity.this.toString(), "Failed to load route list");
                     return null;
                 }
             }
@@ -68,7 +68,7 @@ public class RouteListActivity extends AppCompatActivity {
                 if (routes != null) {
                     adapter.addAll(routes);
                 } else {
-                    Toast.makeText(RouteListActivity.this, R.string.couldNotLoadRoutes, Toast.LENGTH_LONG).show();
+                    Toast.makeText(AmazingRaceMainActivity.this, R.string.couldNotLoadRoutes, Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -79,7 +79,7 @@ public class RouteListActivity extends AppCompatActivity {
     private class RouteListAdapter extends ArrayAdapter<Route> {
 
         public RouteListAdapter() {
-            super(RouteListActivity.this, 0);
+            super(AmazingRaceMainActivity.this, 0);
         }
 
         @Override

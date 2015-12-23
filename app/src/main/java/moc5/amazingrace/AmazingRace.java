@@ -5,7 +5,7 @@ import android.app.Application;
 /**
  * Created by Blade on 23.12.2015.
  */
-public class AmazingRaceApp extends Application {
+public class AmazingRace extends Application {
 
     Route selectedRoute;
 

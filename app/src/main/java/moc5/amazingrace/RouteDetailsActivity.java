@@ -1,11 +1,10 @@
 package moc5.amazingrace;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -31,12 +30,42 @@ public class RouteDetailsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        route = ((AmazingRaceApp)getApplication()).getSelectedRoute();
+        route = ((AmazingRace)getApplication()).getSelectedRoute();
+        updateRoutes();
         UpdateGui();
     }
 
-    private void UpdateGui() {
+    private void updateRoutes() {
+        new AsyncTask<String, Objects, Route[]>() {
+            @Override
+            protected  Route[] doInBackground(String... strings) {
+                Log.i("Console", String.format("Loading route list %s %s", strings[0], strings[1]));
 
+                try {
+                    return new ServiceProxy().getRoutes(strings[0], strings[1]);
+                } catch(ServiceCallException e) {
+                    Log.e(RouteDetailsActivity.this.toString(), "Failed to load route list");
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Route[] routes) {
+                if (routes != null) {
+                    for (Route r : routes) {
+                        if (r.getId().equals(route.getId())) {
+                            ((AmazingRace) getApplication()).setSelectedRoute(r);
+                            route = r;
+                        }
+                    }
+                } else {
+                    Toast.makeText(RouteDetailsActivity.this, R.string.couldNotLoadRoutes, Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute("s1310307036", "s1310307036");
+    }
+
+    private void UpdateGui() {
         if (route != null) {
             setTitle(route.getName());
             TextView txvNextCheckpoint = (TextView)findViewById(R.id.txvNextCheckpoint);
@@ -48,18 +77,20 @@ public class RouteDetailsActivity extends AppCompatActivity {
             txvNextCheckpoint.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(RouteDetailsActivity.this, NextCheckpointActivity.class);
-                    intent.putExtra("routeId", route.getId());
-                    startActivity(intent);
+                    if (route.getNextCheckpoint() != null) {
+                        Intent intent = new Intent(RouteDetailsActivity.this, NextCheckpointActivity.class);
+                        startActivity(intent);
+                    }
                 }
             });
 
             txvVisitedCheckpoints.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(RouteDetailsActivity.this, PreviousCheckpointsActivity.class);
-                    intent.putExtra("routeId", route.getId());
-                    startActivity(intent);
+                    if (route.getVisitedCheckpoints() != null) {
+                        Intent intent = new Intent(RouteDetailsActivity.this, PreviousCheckpointsActivity.class);
+                        startActivity(intent);
+                    }
                 }
             });
         }

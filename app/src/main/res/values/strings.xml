@@ -19,4 +19,9 @@
     <string name="PreviousCheckpoint">Previous Checkpoints</string>
     <string name="RouteDetailsLabel">Route</string>
     <string name="edtHint">Enter here the answer to the question</string>
+    <string name="btnCheck">Submit checkpoint</string>
+    <string name="InvalidSubmit">Invalid checkpoint submission!</string>
+    <string name="SuccessfulSubmit">Checkpoint successful submitted</string>
+    <string name="ProvideAnswer">No answer given</string>
+    <string name="google_maps_key">AIzaSyDVnq5KcqnOUTq2xvAdubxAhxtGJPhs4iw</string>
 </resources>

@@ -3,13 +3,13 @@ package moc5.amazingrace;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
-import android.util.Log;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -189,7 +189,10 @@ public class LoginActivity extends Activity {
             // TODO: attempt authentication against a network service.
             Log.i("Console", "User login task");
             try {
-                return new ServiceProxy().checkCredentials(mUsername, mPassword);
+                Request req = new Request();
+                req.setUserName(mUsername);
+                req.setPassword(mPassword);
+                return new ServiceProxy().checkCredentials(req);
             } catch (ServiceCallException e) {
                 return false;
             }
@@ -202,7 +205,7 @@ public class LoginActivity extends Activity {
             showProgress(false);
 
             if (success) {
-                startActivity(new Intent(LoginActivity.this , RouteListActivity.class));
+                startActivity(new Intent(LoginActivity.this , AmazingRaceMainActivity.class));
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
