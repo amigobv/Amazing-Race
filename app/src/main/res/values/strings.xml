@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Amazing Race</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="error_invalid_username">This username is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="couldNotLoadRoutes">Could not load any route</string>
+    <string name="nextCheckpoint">Next Checkpoint</string>
+    <string name="visitedCheckpoints">Visited Checkpoints</string>
+    <string name="PreviousCheckpoint">Previous Checkpoints</string>
+    <string name="RouteDetailsLabel">Route</string>
+    <string name="edtHint">Enter here the answer to the question</string>
+</resources>
