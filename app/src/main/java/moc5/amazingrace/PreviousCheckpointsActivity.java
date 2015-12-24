@@ -35,19 +35,6 @@ public class PreviousCheckpointsActivity extends AppCompatActivity {
         ListView lsvCheckpoints = (ListView)findViewById(R.id.lstPrevRoutes);
         adapter = new CheckpointListAdapter();
         lsvCheckpoints.setAdapter(adapter);
-
-        lsvCheckpoints.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
-                Intent intent = new Intent(PreviousCheckpointsActivity.this, ViewCheckpoint.class);
-                intent.putExtra("Name", adapter.getItem(position).getName());
-                intent.putExtra("Number", adapter.getItem(position).getNumber());
-                intent.putExtra("Lat", adapter.getItem(position).getLatitude());
-                intent.putExtra("Long", adapter.getItem(position).getLongitude());
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -61,8 +48,28 @@ public class PreviousCheckpointsActivity extends AppCompatActivity {
     private void updateCheckpoints() {
         adapter.clear();
 
+        FragmentManager fragmentManager = getFragmentManager();
+        MapFragment mapFragment = (MapFragment)fragmentManager.findFragmentById(R.id.viewFragmentMap);
+        GoogleMap map = mapFragment.getMap();
+
+        Checkpoint[] checkpoints = route.getVisitedCheckpoints();
+
+        if (map != null) {
+            double latSum = 0.0;
+            double longSum = 0.0;
+
+            for (Checkpoint checkpoint : checkpoints) {
+                latSum += checkpoint.getLatitude();
+                longSum += checkpoint.getLongitude();
+                LatLng location = new LatLng(checkpoint.getLatitude(), checkpoint.getLongitude());
+                map.addMarker(new MarkerOptions().position(location).title(checkpoint.getNumber() + ". " + checkpoint.getName()));
+            }
+            LatLng location = new LatLng(latSum / checkpoints.length, longSum / checkpoints.length);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 17));
+        }
+
         if (route != null)
-            adapter.addAll(route.getVisitedCheckpoints());
+            adapter.addAll(checkpoints);
     }
 
     private class CheckpointListAdapter extends ArrayAdapter<Checkpoint> {

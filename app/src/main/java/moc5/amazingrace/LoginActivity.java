@@ -22,14 +22,6 @@ import android.widget.TextView;
  * A login screen that offers login via username/password.
  */
 public class LoginActivity extends Activity {
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "s1310307036", "s1310307036"
-    };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -176,12 +168,8 @@ public class LoginActivity extends Activity {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mUsername;
-        private final String mPassword;
-
         UserLoginTask(String username, String password) {
-            mUsername = username;
-            mPassword = password;
+            ((AmazingRace)getApplication()).setAuthentification(username, password);
         }
 
         @Override
@@ -189,10 +177,7 @@ public class LoginActivity extends Activity {
             // TODO: attempt authentication against a network service.
             Log.i("Console", "User login task");
             try {
-                Request req = new Request();
-                req.setUserName(mUsername);
-                req.setPassword(mPassword);
-                return new ServiceProxy().checkCredentials(req);
+                return new ServiceProxy().checkCredentials(((AmazingRace)getApplication()).getAuthentification());
             } catch (ServiceCallException e) {
                 return false;
             }
@@ -200,7 +185,6 @@ public class LoginActivity extends Activity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            Log.i("Console", "onPostExecute");
             mAuthTask = null;
             showProgress(false);
 
@@ -214,7 +198,6 @@ public class LoginActivity extends Activity {
 
         @Override
         protected void onCancelled() {
-            Log.i("Console", "onCancelled");
             mAuthTask = null;
             showProgress(false);
         }

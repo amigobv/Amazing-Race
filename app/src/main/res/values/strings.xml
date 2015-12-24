@@ -24,4 +24,9 @@
     <string name="SuccessfulSubmit">Checkpoint successful submitted</string>
     <string name="ProvideAnswer">No answer given</string>
     <string name="google_maps_key">AIzaSyDVnq5KcqnOUTq2xvAdubxAhxtGJPhs4iw</string>
+    <string name="mnuResetRoute">Reset route</string>
+    <string name="mnuResetAllRoutes">Reset all routes</string>
+    <string name="dialogOk">OK</string>
+    <string name="DialogTitle">End of the route</string>
+    <string name="RouteDone">Congratulations! You have reached the end of the route.</string>
 </resources>

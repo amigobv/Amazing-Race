@@ -50,13 +50,11 @@ public class AmazingRaceMainActivity extends AppCompatActivity {
     private void updateRoutes() {
         adapter.clear();
 
-        new AsyncTask<String, Objects, Route[]>() {
+        new AsyncTask<Request, Objects, Route[]>() {
             @Override
-            protected  Route[] doInBackground(String... strings) {
-                Log.i("Console", String.format("Loading route list %s %s", strings[0], strings[1]));
-
+            protected  Route[] doInBackground(Request... req) {
                 try {
-                    return new ServiceProxy().getRoutes(strings[0], strings[1]);
+                    return new ServiceProxy().getRoutes(req[0]);
                 } catch(ServiceCallException e) {
                     Log.e(AmazingRaceMainActivity.this.toString(), "Failed to load route list");
                     return null;
@@ -72,7 +70,7 @@ public class AmazingRaceMainActivity extends AppCompatActivity {
                 }
 
             }
-        }.execute("s1310307036", "s1310307036");
+        }.execute(((AmazingRace)getApplication()).getAuthentification());
     }
 
 

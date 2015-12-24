@@ -1,7 +1,10 @@
 package moc5.amazingrace;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -85,18 +88,19 @@ public class NextCheckpointActivity extends AppCompatActivity {
     }
 
     private void submitCheckpoint(String id, String answer) {
-        new AsyncTask<String, Objects, Boolean>() {
-            @Override
-            protected  Boolean doInBackground(String... strings) {
-                Log.i("Console", String.format("Check checkpoint %s %s", strings[0], strings[1]));
+        CheckpointRequest checkpoint = new CheckpointRequest();
+        Request auth = ((AmazingRace)getApplication()).getAuthentification();
 
+        checkpoint.setUserName(auth.getUserName());
+        checkpoint.setPassword(auth.getPassword());
+        checkpoint.setCheckpointId(id);
+        checkpoint.setSecret(answer);
+
+        new AsyncTask<Request, Objects, Boolean>() {
+            @Override
+            protected  Boolean doInBackground(Request... req) {
                 try {
-                    CheckpointRequest req = new CheckpointRequest();
-                    req.setUserName(strings[0]);
-                    req.setPassword(strings[1]);
-                    req.setCheckpointId(strings[2]);
-                    req.setSecret(strings[3]);
-                    return new ServiceProxy().checkVisitedCheckpoint(req);
+                    return new ServiceProxy().checkVisitedCheckpoint(req[0]);
                 } catch(ServiceCallException e) {
                     Log.e(NextCheckpointActivity.this.toString(), "Failed to load route list");
                     return false;
@@ -107,13 +111,50 @@ public class NextCheckpointActivity extends AppCompatActivity {
             protected void onPostExecute(Boolean answer) {
                 if (answer) {
                     Toast.makeText(NextCheckpointActivity.this, R.string.SuccessfulSubmit, Toast.LENGTH_LONG).show();
-
-                    Intent intent = new Intent(NextCheckpointActivity.this, RouteDetailsActivity.class);
-                    startActivity(intent);
+                    updateRoutes();
                 } else {
                     Toast.makeText(NextCheckpointActivity.this, R.string.InvalidSubmit, Toast.LENGTH_LONG).show();
                 }
             }
-        }.execute("s1310307036", "s1310307036", id, answer);
+        }.execute(checkpoint);
+    }
+
+    private void updateRoutes() {
+        new AsyncTask<Request, Objects, Route[]>() {
+            @Override
+            protected  Route[] doInBackground(Request... req) {
+                try {
+                    return new ServiceProxy().getRoutes(req[0]);
+                } catch(ServiceCallException e) {
+                    Log.e("Console", "Failed to load route list");
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Route[] routes) {
+                if (routes != null) {
+                    for (Route r : routes) {
+                        if (r.getId().equals(route.getId())) {
+                            ((AmazingRace) getApplication()).setSelectedRoute(r);
+                            route = r;
+
+                            if (r.getNextCheckpoint() == null) {
+                                DialogHelper.showAlert(NextCheckpointActivity.this, R.string.DialogTitle,
+                                        R.string.RouteDone, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                });
+                            } else
+                                finish();
+                        }
+                    }
+                } else {
+                    Toast.makeText(NextCheckpointActivity.this, R.string.couldNotLoadRoutes, Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute(((AmazingRace) getApplication()).getAuthentification());
     }
 }

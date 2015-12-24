@@ -22,10 +22,10 @@ import java.net.URL;
  * Created by Blade on 21.12.2015.
  */
 public class ServiceProxy {
-    public Route[] getRoutes(String username, String password) throws ServiceCallException {
+    public Route[] getRoutes(Request req) throws ServiceCallException {
         return queryDataFromService("/GetRoutes?" +
-                                    "userName=" + username +
-                                    "&password=" + password,
+                                    "userName=" + req.getUserName() +
+                                    "&password=" + req.getPassword(),
                                     Route[].class );
     }
 
@@ -40,11 +40,9 @@ public class ServiceProxy {
         return result.toString().equals("true") ? true : false;
     }
 
-    public Boolean checkVisitedCheckpoint(CheckpointRequest req) throws ServiceCallException {
+    public Boolean checkVisitedCheckpoint(Request req) throws ServiceCallException {
         StringBuffer result = new StringBuffer();
         executePostRequest("/InformAboutVisitedCheckpoint", req, result);
-
-        Log.i("Console", String.format("InformAboutVisitedCheckpoint response %s", result.toString()));
 
         return result.toString().equals("true") ? true : false;
     }
@@ -53,16 +51,12 @@ public class ServiceProxy {
         StringBuffer result = new StringBuffer();
         executePostRequest("/ResetAllRoutes", req, result);
 
-        Log.i("Console", String.format("ResetAllRoutes response %s", result.toString()));
-
         return result.toString().equals("true") ? true : false;
     }
 
-    public boolean resetRoute(RouteRequest req) throws ServiceCallException {
+    public boolean resetRoute(Request req) throws ServiceCallException {
         StringBuffer result = new StringBuffer();
         executePostRequest("/ResetRoute", req, result);
-
-        Log.i("Console", String.format("ResetRoute response %s", result.toString()));
 
         return result.toString().equals("true") ? true : false;
     }
@@ -84,33 +78,6 @@ public class ServiceProxy {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             result.append(readInputStream(urlConnection.getInputStream()));
-//            try {
-//                BufferedReader reader = null;
-//                try {
-//                    reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-//
-//                    String line;
-//                    boolean isFirst = true;
-//                    while ((line = reader.readLine()) != null) {
-//                        if (isFirst) {
-//                            isFirst = false;
-//                        } else {
-//                            result.append(System.getProperty("line.separator"));
-//                        }
-//
-//                        result.append(line);
-//                    }
-//
-//                } finally {
-//                    if (reader != null) {
-//                        reader.close();
-//                    }
-//                }
-//            } finally {
-//                Log.i("Console", "close connection");
-//                urlConnection.disconnect();
-//            }
-
         } catch(IOException ex) {
             Log.e("Console", "IOException");
             throw new ServiceCallException(ex);
@@ -121,7 +88,6 @@ public class ServiceProxy {
         try {
             Request req = null;
             URL url = new URL("https://demo.nexperts.com/MOC5/AmazingRaceService/AmazingRaceService.svc" + urlString);
-            Log.i("Console", String.format("Url '%s", url.toString()));
 
             if (urlString.equals("/InformAboutVisitedCheckpoint")) {
                 req = (CheckpointRequest)postReq;
@@ -148,19 +114,15 @@ public class ServiceProxy {
                 writer.flush();
                 writer.close();
 
-                Log.i("Console", "execute write");
-
                 if(urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK){
                     result.append(readInputStream(urlConnection.getInputStream()));
                 } else {
                     result.append(readInputStream(urlConnection.getErrorStream()));
                 }
             } finally {
-                Log.i("Console", "close connection");
                 urlConnection.disconnect();
             }
         } catch( IOException ex) {
-            Log.i("Console", "Post exception");
             throw new ServiceCallException(ex);
         }
     }
@@ -180,7 +142,6 @@ public class ServiceProxy {
                         result.append(System.getProperty("line.separator"));
                     }
                     result.append(line);
-                    Log.i("Console", String.format("Line %s", line));
                 }
             } finally {
                 if (reader != null) {
@@ -190,7 +151,6 @@ public class ServiceProxy {
 
             return result.toString();
         } catch(IOException ex) {
-            Log.i("Console", "Stream exception");
             throw new ServiceCallException(ex);
         }
     }

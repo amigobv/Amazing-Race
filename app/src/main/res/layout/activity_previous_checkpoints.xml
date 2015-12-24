@@ -16,6 +16,11 @@
             android:id="@+id/lstPrevRoutes"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </LinearLayout>
 
+        <fragment
+            android:id="@+id/viewFragmentMap"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
 </RelativeLayout>

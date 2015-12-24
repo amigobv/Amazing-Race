@@ -7,9 +7,4 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="moc5.amazingrace.ViewCheckpoint">
 
-    <fragment
-        android:id="@+id/viewFragmentMap"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 </RelativeLayout>
