@@ -3,6 +3,8 @@ package moc5.amazingrace;
 import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class PreviousCheckpointsActivity extends AppCompatActivity {
     CheckpointListAdapter adapter;
@@ -58,12 +61,22 @@ public class PreviousCheckpointsActivity extends AppCompatActivity {
             double latSum = 0.0;
             double longSum = 0.0;
 
+            PolylineOptions options = new PolylineOptions();
+
+            options.color( Color.parseColor("#CC0000FF") );
+            options.width(5);
+            options.visible(true);
+
             for (Checkpoint checkpoint : checkpoints) {
                 latSum += checkpoint.getLatitude();
                 longSum += checkpoint.getLongitude();
                 LatLng location = new LatLng(checkpoint.getLatitude(), checkpoint.getLongitude());
                 map.addMarker(new MarkerOptions().position(location).title(checkpoint.getNumber() + ". " + checkpoint.getName()));
+                options.add(new LatLng(checkpoint.getLatitude(), checkpoint.getLongitude()));
             }
+
+            map.addPolyline( options );
+
             LatLng location = new LatLng(latSum / checkpoints.length, longSum / checkpoints.length);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 17));
         }
