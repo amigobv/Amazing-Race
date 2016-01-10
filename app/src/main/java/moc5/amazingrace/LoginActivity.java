@@ -189,6 +189,7 @@ public class LoginActivity extends Activity {
             showProgress(false);
 
             if (success) {
+                finish();
                 startActivity(new Intent(LoginActivity.this , AmazingRaceMainActivity.class));
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
